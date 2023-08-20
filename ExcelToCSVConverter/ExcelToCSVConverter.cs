@@ -5,20 +5,25 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using ClosedXML.Excel;
 
-namespace ExcelToCSVConverter
+namespace ExcelToCSVConverterNamespace
 {
-    class Program
+    public class ExcelToCSVConverter
     {
-        static async Task Main(string[] args)
+        private readonly HttpClient _httpClient;
+
+        public ExcelToCSVConverter(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        public async Task<bool> ConvertExcelToCSVAsync(string url, string csvFilePath)
         {
             try
             {
                 ThreadPool.SetMinThreads(50, 50);
-                string url = "https://bakerhughesrigcount.gcs-web.com/intl-rig-count?c=79687&p=irol-rigcountsintl";
-                string csvFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RigCounts.csv"); // Fajl će biti sačuvan na desktopu
 
-                using var httpClient = new HttpClient();
-                httpClient.Timeout = TimeSpan.FromMinutes(1); // Povećavamo timeout 
+                using var httpClient = _httpClient;
+                httpClient.Timeout = TimeSpan.FromMinutes(1);
 
                 var html = await httpClient.GetStringAsync(url);
                 var htmlDocument = new HtmlDocument();
@@ -28,7 +33,6 @@ namespace ExcelToCSVConverter
                 if (excelLinkNode != null)
                 {
                     string excelLink = excelLinkNode.GetAttributeValue("href", "");
-                    Console.WriteLine("Excel link: " + excelLink);
 
                     var excelStream = await httpClient.GetStreamAsync("https://bakerhughesrigcount.gcs-web.com" + excelLink);
 
@@ -37,11 +41,11 @@ namespace ExcelToCSVConverter
 
                     int rowCount = worksheet.RowsUsed().Count();
 
-                    // Tražimo redove koji pripadaju poslednje 2 godine
                     DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
-                    int startRow = 2; // Prvi red sa podacima (preskačemo zaglavlje)
-                    int endRow = rowCount; // Zadnji red sa podacima
+                    int startRow = 2;
+                    int endRow = rowCount;
 
+                    // Tražimo redove koji pripadaju poslednje 2 godine
                     for (int row = startRow; row <= rowCount; row++)
                     {
                         var dateCell = worksheet.Cell(row, 1);
@@ -49,7 +53,7 @@ namespace ExcelToCSVConverter
                         {
                             if (rigDate >= twoYearsAgo)
                             {
-                                startRow = row; // Postavljamo početni red na prvi red poslednje 2 godine
+                                startRow = row;
                                 break;
                             }
                         }
@@ -63,16 +67,41 @@ namespace ExcelToCSVConverter
                         csvFile.WriteLine(csvLine);
                     }
 
-                    Console.WriteLine("CSV fajl je uspešno sačuvan na putanji: " + csvFilePath);
+                    return true;
                 }
                 else
                 {
-                    Console.WriteLine("Nije pronađen link do Excel fajla.");
+                    return false;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine("Došlo je do greške: " + ex.Message);
+                return false;
+            }
+        }
+    }
+
+    public class Program
+    {
+        static async Task Main(string[] args)
+        {
+            // Kreiranje instance HttpClient i ExcelToCSVConverter
+            using var httpClient = new HttpClient();
+            var converter = new ExcelToCSVConverter(httpClient);
+
+            // Poziv metode za konverziju
+            bool conversionResult = await converter.ConvertExcelToCSVAsync(
+                "https://bakerhughesrigcount.gcs-web.com/intl-rig-count?c=79687&p=irol-rigcountsintl",
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "TestRigCounts.csv")
+            );
+
+            if (conversionResult)
+            {
+                Console.WriteLine("Konverzija uspešno završena.");
+            }
+            else
+            {
+                Console.WriteLine("Došlo je do greške pri konverziji.");
             }
         }
     }
