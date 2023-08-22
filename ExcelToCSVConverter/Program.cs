@@ -29,7 +29,7 @@ namespace ExcelToCSVConverterNamespace
                 var htmlDocument = new HtmlDocument();
                 htmlDocument.LoadHtml(html);
 
-                var excelLinkNode = htmlDocument.DocumentNode.SelectSingleNode("//a[@title='Worldwide Rig Count Jul 2023.xlsx']");
+                var excelLinkNode = htmlDocument.DocumentNode.SelectSingleNode("//a[contains(text(), 'Worldwide Rig Counts - Current & Historical Data')]");
                 if (excelLinkNode != null)
                 {
                     string excelLink = excelLinkNode.GetAttributeValue("href", "");
