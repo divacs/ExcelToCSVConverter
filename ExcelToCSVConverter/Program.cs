@@ -20,22 +20,29 @@ namespace ExcelToCSVConverterNamespace
         {
             try
             {
+                // Set the minimum number of threads in the ThreadPool
                 ThreadPool.SetMinThreads(50, 50);
 
+                // Create and configure an instance of HttpClient
                 using var httpClient = _httpClient;
                 httpClient.Timeout = TimeSpan.FromMinutes(1);
 
+                // Download the HTML content from the provided URL
                 var html = await httpClient.GetStringAsync(url);
                 var htmlDocument = new HtmlDocument();
                 htmlDocument.LoadHtml(html);
 
+                // Find the anchor element containing the specified text
                 var excelLinkNode = htmlDocument.DocumentNode.SelectSingleNode("//a[contains(text(), 'Worldwide Rig Counts - Current & Historical Data')]");
                 if (excelLinkNode != null)
                 {
+                    // Get the 'href' attribute value from the anchor element
                     string excelLink = excelLinkNode.GetAttributeValue("href", "");
 
+                    // Download the Excel file using the obtained link
                     var excelStream = await httpClient.GetStreamAsync("https://bakerhughesrigcount.gcs-web.com" + excelLink);
 
+                    // Load the Excel file into a ClosedXML workbook
                     using var workbook = new XLWorkbook(excelStream);
                     var worksheet = workbook.Worksheet(1);
 
@@ -45,7 +52,7 @@ namespace ExcelToCSVConverterNamespace
                     int startRow = 2;
                     int endRow = rowCount;
 
-                    // Tražimo redove koji pripadaju poslednje 2 godine
+                    // Find rows that belong to the last 2 years
                     for (int row = startRow; row <= rowCount; row++)
                     {
                         var dateCell = worksheet.Cell(row, 1);
@@ -59,7 +66,7 @@ namespace ExcelToCSVConverterNamespace
                         }
                     }
 
-                    // Kreiramo CSV fajl i upisujemo podatke
+                    // Create a CSV file and write data into it
                     using var csvFile = new StreamWriter(csvFilePath);
                     for (int row = startRow; row <= endRow; row++)
                     {
@@ -85,11 +92,11 @@ namespace ExcelToCSVConverterNamespace
     {
         static async Task Main(string[] args)
         {
-            // Kreiranje instance HttpClient i ExcelToCSVConverter
+            // Create an instance of HttpClient and ExcelToCSVConverter
             using var httpClient = new HttpClient();
             var converter = new ExcelToCSVConverter(httpClient);
 
-            // Poziv metode za konverziju
+            // Call the method for conversion
             bool conversionResult = await converter.ConvertExcelToCSVAsync(
                 "https://bakerhughesrigcount.gcs-web.com/intl-rig-count?c=79687&p=irol-rigcountsintl",
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "TestRigCounts.csv")
@@ -97,11 +104,11 @@ namespace ExcelToCSVConverterNamespace
 
             if (conversionResult)
             {
-                Console.WriteLine("Konverzija uspešno završena.");
+                Console.WriteLine("Conversion completed successfully.");
             }
             else
             {
-                Console.WriteLine("Došlo je do greške pri konverziji.");
+                Console.WriteLine("An error occurred during conversion.");
             }
         }
     }
