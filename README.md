@@ -4,7 +4,7 @@ This console application downloads an Excel file from a specified website, extra
 
 ## Installation
 
-1. Clone this repository to your local machine using: git clone https://github.com/divacs/ExcelToCSVConverter.git
+1. Clone this repository to your local machine using: `git clone https://github.com/divacs/ExcelToCSVConverter.git`
 2. Open the solution in your preferred development environment (Visual Studio, Visual Studio Code, etc.).
 
 3. Make sure to restore NuGet packages and ensure you have .NET 6/5 SDK installed.
@@ -25,6 +25,8 @@ This console application downloads an Excel file from a specified website, extra
 
 - HtmlAgilityPack: Used for parsing HTML content.
 - ClosedXML: Used for working with Excel files.
+- xUnit: Used for unit testing.
+- Moq: Used for mocking dependencies in unit tests.
 
 ## Unit Tests
 
@@ -43,6 +45,3 @@ Feel free to contribute to this project by opening issues or pull requests.
 ## License
 
 For more details and explanations, you can refer to the source code in `Program.cs`.
-
-
-
