@@ -1,6 +1,6 @@
 # Excel to CSV Converter
 
-This console application downloads an Excel file from a specified website, extracts data, and converts it into a CSV (comma-separated values) file. The application uses C# .NET 6/5, HttpClient for web requests, HtmlAgilityPack for HTML parsing, and ClosedXML for working with Excel files.
+This console application downloads an Excel file from a specified website, extracts data, and converts it into a CSV (comma-separated values) file. The application uses C# .NET 6, HttpClient for web requests, HtmlAgilityPack for HTML parsing, and ClosedXML for working with Excel files.
 
 ## Installation
 
