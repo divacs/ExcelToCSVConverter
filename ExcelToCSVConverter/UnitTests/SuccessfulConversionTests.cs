@@ -5,10 +5,10 @@ using Xunit;
 
 namespace ExcelToCSVConverterNamespace.Tests
 {
-    // Ovaj test simulira uspešnu konverziju Excel fajla u CSV format.
-    // Koristi se httpClientMock kako bi se simuliralo uspešno preuzimanje HTML-a i
-    // sadržaja Excel fajla. Test proverava da li se povratna vrednost metode
-    // ConvertExcelToCSVAsync postavlja na true, što ukazuje na uspešnu konverziju.
+    // This test simulates a successful conversion of an Excel file into CSV format.
+    // The httpClientMock is used to simulate a successful download of HTML and
+    // the content of the Excel file. The test verifies whether the return value of the
+    // ConvertExcelToCSVAsync method is set to true, indicating a successful conversion.
     public class SuccessfulConversionTests
     {
         [Fact]

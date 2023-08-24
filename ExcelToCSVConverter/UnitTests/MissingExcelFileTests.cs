@@ -5,11 +5,11 @@ using Xunit;
 
 namespace ExcelToCSVConverterNamespace.Tests
 {
-    // Ovaj test simulira situaciju kada Excel fajl nije pronađen ili nije mogao da se preuzme.
-    // Korišćenjem httpClientMock simulira se prazan odgovor za preuzimanje sadržaja
-    // Excel fajla kako bi se proverilo kako metoda reaguje na ovakvu situaciju.
-    // Test proverava da li se povratna vrednost metode ConvertExcelToCSVAsync
-    // postavlja na false, što ukazuje na neuspešnu konverziju.
+    // This test simulates a situation where the Excel file is not found or could not be downloaded.
+    // Using httpClientMock, an empty response for downloading the content of the Excel file is simulated
+    // to verify how the method reacts to such a situation.
+    // The test checks whether the return value of the ConvertExcelToCSVAsync method
+    // is set to false, indicating an unsuccessful conversion.
     public class MissingExcelFileTests
     {
         [Fact]
