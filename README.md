@@ -7,7 +7,7 @@ This console application downloads an Excel file from a specified website, extra
 1. Clone this repository to your local machine using: `git clone https://github.com/divacs/ExcelToCSVConverter.git`
 2. Open the solution in your preferred development environment (Visual Studio, Visual Studio Code, etc.).
 
-3. Make sure to restore NuGet packages and ensure you have .NET 6/5 SDK installed.
+3. Make sure to restore NuGet packages and ensure you have .NET 6 SDK installed.
 
 ## Usage
 
